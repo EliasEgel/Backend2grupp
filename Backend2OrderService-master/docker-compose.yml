@@ -1,0 +1,90 @@
+version: '3'
+
+networks:
+  webshop-network:
+    driver: bridge
+
+services:
+  ordersdbservice:
+    image: ghcr.io/antfou/webshopdborders
+    container_name: ordersdbcontainer
+    networks:
+      - webshop-network
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD-SHELL", "exit"]
+      interval: 20s
+      timeout: 30s
+
+  ordersapiservice:
+    image: ghcr.io/antfou/webshopapiorders
+    container_name: ordersapicontainer
+    networks:
+      - webshop-network
+    environment:
+      - DB_USER=springuser
+      - DB_DATABASE=ordersdb
+      - DB_PASSWORD=ThePassword
+      - MYSQL_HOST=ordersdbservice
+    ports:
+      - "9090:8080"
+    depends_on:
+      ordersdbservice:
+        condition: service_healthy
+
+  inventorydbservice:
+    image: ghcr.io/lerre00/inventorydb 
+    container_name: inventorydbcontainer
+    networks:
+      - webshop-network
+    ports:
+      - "3307:3306"
+    healthcheck:
+      test: ["CMD-SHELL", "exit"]
+      interval: 20s
+      timeout: 30s
+    
+  inventoryapiservice:
+    image: ghcr.io/lerre00/inventoryservice
+    container_name: inventoryapicontainer
+    networks:
+      - webshop-network
+    environment:
+    - DB_USER=springuser
+    - DB_DATABASE=inventorydb
+    - DB_PASSWORD=ThePassword
+    - MYSQL_HOST=inventorydbservice
+    ports:
+    - "9091:8080"
+    depends_on:
+      inventorydbservice:
+        condition: service_healthy
+
+  customerdbservice:
+    image: ghcr.io/janihakalayh/customerdb
+    container_name: customerdbcontainer
+    networks:
+      - webshop-network
+    ports:
+      - "3308:3306"
+    healthcheck:
+      test: ["CMD-SHELL", "exit"]
+      interval: 20s
+      timeout: 30s
+    
+  customerapiservice:
+    image: ghcr.io/janihakalayh/customerservice
+    container_name: customerapicontainer #vid strul, testa detta istället för localhost
+    networks:
+      - webshop-network
+    environment:
+    - DB_USER=springuser
+    - DB_DATABASE=customerdb
+    - DB_PASSWORD=ThePassword
+    - MYSQL_HOST=customerdbservice
+    ports:
+    - "9092:8080"
+    depends_on:
+      customerdbservice:
+        condition: service_healthy
