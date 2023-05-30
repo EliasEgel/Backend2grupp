@@ -10,10 +10,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import jakarta.servlet.DispatcherType;
+
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
-    @Bean
+
+    /*@Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http)
             throws Exception {
         http.authorizeHttpRequests((requests) -> requests
@@ -23,6 +27,39 @@ public class WebSecurityConfig {
                 .requestMatchers("api/v1/Item/items/{id}").permitAll()
                 .requestMatchers("api/v1/Item/items").hasRole("USER"))
                 .formLogin(Customizer.withDefaults()).csrf().disable();
+        return http.build();
+    }*/
+
+    /*@Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+        //Setting roles
+        http.authorizeHttpRequests((requests) -> requests
+                .dispatcherTypeMatchers(DispatcherType.FORWARD,
+                        DispatcherType.ERROR).permitAll()
+                .requestMatchers("api/v1/Item/items").hasRole("USER")
+                .requestMatchers("api/v1/Item/addItem").permitAll()
+                .requestMatchers("api/v1/Item/items/{id}").permitAll()
+                .requestMatchers("/swagger-ui/index.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll());
+                //.requestMatchers(AUTH_WHITE_LIST).permitAll());
+
+        //Use Basic Auth
+        http.httpBasic(withDefaults());
+
+        //disabling csrf for POST.
+        http.csrf().disable();
+
+        return http.build();
+    }*/
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http)
+            throws Exception {
+        http.authorizeHttpRequests((requests) -> requests
+                        .requestMatchers("api/v1/Item/addItem").permitAll()
+                        .requestMatchers("api/v1/Item/items/{id}").permitAll()
+                        .requestMatchers("api/v1/Item/items").hasRole("USER"))
+                .httpBasic(Customizer.withDefaults()).csrf().disable();
         return http.build();
     }
 

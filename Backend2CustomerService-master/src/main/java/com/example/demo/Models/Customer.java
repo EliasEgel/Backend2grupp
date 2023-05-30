@@ -3,6 +3,7 @@ package com.example.demo.Models;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,6 +18,7 @@ public class Customer {
     @Id
     @GeneratedValue
     protected Long id;
+    @NotEmpty(message = "name is mandatory")
     protected String name;
     protected String ssn;
 
