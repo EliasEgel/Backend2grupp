@@ -24,11 +24,8 @@ public class CustomerService {
     public Customer getCustomer(Long id){
         return customerRepository.findById(id).get();
     }
+
     public String addNewCustomer(Customer customer){
-        Optional<Customer> c = customerRepository.findCustomerByName(customer.getName());
-        if(c.isPresent()){
-            throw new IllegalStateException("Name already taken");
-        }
         customerRepository.save(customer);
         return "kunden "+customer.getName()+" har lagts till";
     }

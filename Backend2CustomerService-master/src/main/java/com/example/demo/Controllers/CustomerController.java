@@ -39,9 +39,7 @@ public class CustomerController {
         return customerService.customerExistsById(id);
     }
     @PostMapping
-    public void addCustomer(@Valid @RequestBody Customer c){
-        customerService.addNewCustomer(c);
-    }
+    public String addCustomer(@Valid @RequestBody Customer c){return customerService.addNewCustomer(c);}
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
